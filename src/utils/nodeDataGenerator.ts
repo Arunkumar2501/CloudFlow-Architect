@@ -20,7 +20,7 @@ export const generateNodeValue = (
 ): string => {
   switch (nodeType) {
     case 'region':
-      // Generate region name like us-east-1, us-west-2, etc.
+      // Prefer a fresh region from a short curated list, then fall back to incremental
       const regions = ['us-east-1', 'us-east-2', 'us-west-1', 'us-west-2', 'eu-west-1', 'ap-southeast-1'];
       const existingRegions = existingNodes
         .filter(n => n.data.type === 'region')
@@ -31,7 +31,7 @@ export const generateNodeValue = (
       return availableRegions[0] || `us-east-${existingRegions.length + 1}`;
 
     case 'availabilityZone':
-      // Generate AZ name based on parent region
+      // Generate AZ name based on parent region, reuse letters a-f per region
       if (parentNode?.value && parentNodeId) {
         // Extract region prefix (e.g., "us-east-1" from "us-east-1")
         const regionValue = parentNode.value;

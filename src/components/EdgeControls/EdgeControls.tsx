@@ -11,6 +11,7 @@ interface EdgeControlsData {
 /**
  * Custom Edge Component with Action Dropdown
  * Displays a Tailwind-styled select dropdown in the middle of the edge
+ * Keeps action + delete logic on the edge data to avoid prop drilling
  */
 const EdgeControls: React.FC<EdgeProps<EdgeControlsData>> = ({
   id,

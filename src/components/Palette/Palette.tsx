@@ -9,6 +9,7 @@ interface PaletteProps {
 /**
  * Node Palette Component
  * Displays draggable cloud architecture components on the left side
+ * Keeps drag start minimal: only sets MIME type consumed by React Flow drop
  */
 const Palette: React.FC<PaletteProps> = ({ onDragStart }) => {
   return (

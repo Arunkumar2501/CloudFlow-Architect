@@ -18,6 +18,7 @@ import { validateConnection } from '../utils/validation';
 
 /**
  * Custom hook for managing diagram builder state and logic
+ * Keeps all node/edge mutation logic co-located for clarity
  */
 export const useDiagramBuilder = () => {
   const [nodes, setNodes] = useState<Node<NodeData>[]>([]);
@@ -126,8 +127,7 @@ export const useDiagramBuilder = () => {
         y: event.clientY,
       });
 
-      // Find parent node if dropping inside another node
-      // Find the innermost (most specific) parent node by selecting the one with smallest area
+    // Find the innermost (most specific) parent node containing the drop point
       const containingNodes = nodes
         .map((node) => {
           const nodeElement = document.querySelector(`[data-id="${node.id}"]`);
