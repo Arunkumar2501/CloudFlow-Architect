@@ -81,12 +81,12 @@ export const useDiagramBuilder = () => {
     (connection: Connection) => {
       if (!connection.source || !connection.target) return;
 
-      // Validate connection
+      // Validate connection (self-connections and cycle prevention enabled)
       const validation = validateConnection(
         connection.source,
         connection.target,
         edges,
-        false // Optional: set to true to prevent cycles
+        true
       );
 
       if (!validation.isValid) {
@@ -118,16 +118,17 @@ export const useDiagramBuilder = () => {
   const onDrop = useCallback(
     (event: React.DragEvent, reactFlowInstance: any) => {
       event.preventDefault();
+      if (!reactFlowInstance) return;
 
       const nodeType = event.dataTransfer.getData('application/reactflow') as NodeType;
       if (!nodeType) return;
 
-      const position = reactFlowInstance.screenToFlowPosition({
+      const flowPosition = reactFlowInstance.screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
       });
 
-    // Find the innermost (most specific) parent node containing the drop point
+      // Find the innermost (most specific) parent node containing the drop point
       const containingNodes = nodes
         .map((node) => {
           const nodeElement = document.querySelector(`[data-id="${node.id}"]`);
@@ -162,6 +163,14 @@ export const useDiagramBuilder = () => {
         return;
       }
 
+      // Compute position; if nested, make it relative so extent='parent' works
+      const position = parentNode
+        ? {
+            x: flowPosition.x - parentNode.position.x,
+            y: flowPosition.y - parentNode.position.y,
+          }
+        : flowPosition;
+
       // Generate node data
       const nodeId = generateNodeId();
       const nodeValue = generateNodeValue(
@@ -192,6 +201,8 @@ export const useDiagramBuilder = () => {
         id: nodeId,
         type: nodeType,
         position,
+        parentNode: parentNode?.id,
+        extent: parentNode ? 'parent' : undefined,
         width: nodeDimensions[nodeType].width,
         height: nodeDimensions[nodeType].height,
         data: {

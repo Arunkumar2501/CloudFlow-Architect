@@ -10,7 +10,8 @@ A production-ready React application for building interactive cloud architecture
 - **Node Management**: Create, drag, and delete nodes dynamically
 - **Edge Connections**: Connect nodes with customizable action labels
 - **Auto-Population**: Automatic data generation based on node hierarchy
-- **Validation**: Prevents invalid connections (self-connections, optional cycle prevention)
+- **Validation**: Prevents invalid connections (self-connections and cycle prevention enabled)
+- **Nested containment**: Child nodes are constrained within their parent containers
 
 ### Supported Node Types
 1. **Region** - AWS Region container (e.g., `us-east-1`)
