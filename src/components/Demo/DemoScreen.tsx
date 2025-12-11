@@ -6,13 +6,14 @@ import migrateIcon from '../../assets/download (24).svg';
 import docAsset from '../../assets/Vector.svg';
 import maskAsset from '../../assets/Mask group.svg';
 import plusAsset from '../../assets/Frame 1410126261.svg';
+import vectorCorner from '../../assets/Vector (2).svg';
 
 const { Title, Text } = Typography;
 
 const options = [
-  { label: 'Serverless ETL on AWS Glue', icon: migrateIcon },
-  { label: 'Migrate an on-premises', icon:  serverlessIcon},
-  { label: 'Migrate an on-premises', icon: serverlessIcon },
+  { label: 'Serverless ETL on AWS Glue', icon: serverlessIcon },
+  { label: 'Migrate an on-premises', icon: migrateIcon },
+  { label: 'Migrate an on-premises', icon: migrateIcon },
 ];
 
 const PlusBadge: React.FC = () => (
@@ -82,13 +83,18 @@ const DemoScreen: React.FC = () => {
                     <img
                       src={maskAsset}
                       alt=""
-                      className="absolute inset-0 w-[170px] h-auto pointer-events-none"
+                      className="absolute inset-0 w-[210px] h-auto pointer-events-none"
+                    />
+                    <img
+                      src={vectorCorner}
+                      alt=""
+                      className="absolute top-0 right-0 w-[72px] h-auto pointer-events-none"
                     />
                   </div>
                   <img
                     src={plusAsset}
                     alt="Plus"
-                    className="absolute -right-6 bottom-0  w-14 h-14 drop-shadow-[0_6px_18px_rgba(0,0,0,0.12)]"
+                    className="absolute -right-6 bottom-0 w-14 h-14 drop-shadow-[0_6px_18px_rgba(0,0,0,0.12)]"
                   />
                 </div>
               </div>
