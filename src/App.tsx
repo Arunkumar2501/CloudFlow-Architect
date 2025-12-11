@@ -1,9 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import ReactFlow, {
   Background,
   Controls,
   MiniMap,
   ReactFlowProvider,
+  ConnectionMode,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
@@ -51,6 +52,10 @@ const App: React.FC = () => {
 
   const [reactFlowInstance, setReactFlowInstance] = React.useState<any>(null);
 
+  // Memoize node and edge type maps to keep stable references for React Flow
+  const memoNodeTypes = useMemo(() => nodeTypes, []);
+  const memoEdgeTypes = useMemo(() => edgeTypes, []);
+
   const onInit = useCallback((instance: any) => {
     setReactFlowInstance(instance);
   }, []);
@@ -78,8 +83,9 @@ const App: React.FC = () => {
           onDrop={(e) => onDrop(e, reactFlowInstance)}
           onDragOver={onDragOver}
           onInit={onInit}
-          nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
+          connectionMode={ConnectionMode.Loose}
+          nodeTypes={memoNodeTypes}
+          edgeTypes={memoEdgeTypes}
           fitView
           attributionPosition="bottom-left"
         >
