@@ -4,6 +4,7 @@ import { LeftOutlined } from '@ant-design/icons';
 import serverlessIcon from '../../assets/download (26).svg';
 import migrateIcon from '../../assets/download (24).svg';
 import docAsset from '../../assets/Vector.svg';
+import maskAsset from '../../assets/Mask group.svg';
 import plusAsset from '../../assets/Frame 1410126261.svg';
 
 const { Title, Text } = Typography;
@@ -72,8 +73,17 @@ const DemoScreen: React.FC = () => {
               {/* Illustration panel */}
               <div className="bg-gradient-to-br from-[#d8e4ff] via-[#d4dfff] to-[#dfe9ff] rounded-xl border border-[#dbe4fa] shadow-sm flex items-center justify-center min-h-[280px] px-4 py-6">
                 <div className="relative flex items-center justify-center">
-                  <div className="w-[210px] h-[220px] bg-white rounded-2xl shadow-[0_10px_28px_rgba(31,107,255,0.2)] flex items-center justify-center">
-                    <img src={docAsset} alt="Document" className="w-[170px] h-auto drop-shadow-[0_10px_28px_rgba(31,107,255,0.2)]" />
+                  <div className="w-[210px] h-[220px] bg-white rounded-2xl shadow-[0_10px_28px_rgba(31,107,255,0.2)] flex items-center justify-center relative overflow-hidden">
+                    <img
+                      src={docAsset}
+                      alt="Document"
+                      className="w-[170px] h-auto drop-shadow-[0_10px_28px_rgba(31,107,255,0.2)]"
+                    />
+                    <img
+                      src={maskAsset}
+                      alt=""
+                      className="absolute inset-0 w-[170px] h-auto pointer-events-none"
+                    />
                   </div>
                   <img
                     src={plusAsset}
