@@ -10,9 +10,9 @@ import plusAsset from '../../assets/Frame 1410126261.svg';
 const { Title, Text } = Typography;
 
 const options = [
-  { label: 'Serverless ETL on AWS Glue', icon: serverlessIcon },
-  { label: 'Migrate an on-premises', icon: migrateIcon },
-  { label: 'Migrate an on-premises', icon: migrateIcon },
+  { label: 'Serverless ETL on AWS Glue', icon: migrateIcon },
+  { label: 'Migrate an on-premises', icon:  serverlessIcon},
+  { label: 'Migrate an on-premises', icon: serverlessIcon },
 ];
 
 const PlusBadge: React.FC = () => (
@@ -77,7 +77,7 @@ const DemoScreen: React.FC = () => {
                     <img
                       src={docAsset}
                       alt="Document"
-                      className="w-[170px] h-auto drop-shadow-[0_10px_28px_rgba(31,107,255,0.2)]"
+                      className="w-[210px] h-auto drop-shadow-[0_10px_28px_rgba(31,107,255,0.2)]"
                     />
                     <img
                       src={maskAsset}
@@ -88,7 +88,7 @@ const DemoScreen: React.FC = () => {
                   <img
                     src={plusAsset}
                     alt="Plus"
-                    className="absolute -right-5 bottom-6 w-14 h-14 drop-shadow-[0_6px_18px_rgba(0,0,0,0.12)]"
+                    className="absolute -right-6 bottom-0  w-14 h-14 drop-shadow-[0_6px_18px_rgba(0,0,0,0.12)]"
                   />
                 </div>
               </div>
