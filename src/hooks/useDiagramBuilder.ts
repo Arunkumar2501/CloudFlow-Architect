@@ -26,6 +26,28 @@ export const useDiagramBuilder = () => {
   const nodeIdCounter = useRef(0);
 
   /**
+   * Ensures parents are declared before children to satisfy React Flow hierarchy
+   */
+  const sortNodesByHierarchy = useCallback((list: Node<NodeData>[]) => {
+    const depthCache = new Map<string, number>();
+
+    const getDepth = (node: Node<NodeData>): number => {
+      if (depthCache.has(node.id)) return depthCache.get(node.id)!;
+      const parentId = node.data.parentId || node.parentNode;
+      if (!parentId) {
+        depthCache.set(node.id, 0);
+        return 0;
+      }
+      const parentNode = list.find((n) => n.id === parentId);
+      const depth = parentNode ? getDepth(parentNode) + 1 : 0;
+      depthCache.set(node.id, depth);
+      return depth;
+    };
+
+    return [...list].sort((a, b) => getDepth(a) - getDepth(b));
+  }, []);
+
+  /**
    * Generates a unique node ID
    */
   const generateNodeId = useCallback(() => {
@@ -36,9 +58,15 @@ export const useDiagramBuilder = () => {
   /**
    * Handles node changes (drag, select, etc.)
    */
-  const onNodesChange: OnNodesChange = useCallback((changes: NodeChange[]) => {
-    setNodes((nds) => applyNodeChanges(changes, nds));
-  }, []);
+  const onNodesChange: OnNodesChange = useCallback(
+    (changes: NodeChange[]) => {
+      setNodes((nds) => {
+        const updated = applyNodeChanges(changes, nds);
+        return sortNodesByHierarchy(updated);
+      });
+    },
+    [sortNodesByHierarchy]
+  );
 
   /**
    * Handles edge changes
@@ -68,11 +96,43 @@ export const useDiagramBuilder = () => {
   /**
    * Handles node deletion
    */
-  const handleNodeDelete = useCallback((nodeId: string) => {
-    setNodes((nds) => nds.filter((node) => node.id !== nodeId));
-    // Also remove connected edges
-    setEdges((eds) => eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
-  }, []);
+  const handleNodeDelete = useCallback(
+    (nodeId: string) => {
+      // Collect the node and all its descendants (using both data.parentId and parentNode)
+      const collectDescendants = (targetId: string, allNodes: Node<NodeData>[]): Set<string> => {
+        const toDelete = new Set<string>([targetId]);
+        let changed = true;
+        while (changed) {
+          changed = false;
+          allNodes.forEach((node) => {
+            const parentRef = node.data.parentId || node.parentNode;
+            if (parentRef && toDelete.has(parentRef) && !toDelete.has(node.id)) {
+              toDelete.add(node.id);
+              changed = true;
+            }
+          });
+        }
+        return toDelete;
+      };
+
+      let deleteIds = new Set<string>();
+
+      // Update nodes using the freshest snapshot to avoid stale closures
+      setNodes((nds) => {
+        deleteIds = collectDescendants(nodeId, nds);
+        const filtered = nds.filter((node) => !deleteIds.has(node.id));
+        return sortNodesByHierarchy(filtered);
+      });
+
+      // Also remove connected edges (including edges connected to descendants)
+      setEdges((eds) =>
+        eds.filter(
+          (edge) => !deleteIds.has(edge.source) && !deleteIds.has(edge.target)
+        )
+      );
+    },
+    [sortNodesByHierarchy]
+  );
 
   /**
    * Handles new connections between nodes
@@ -214,9 +274,9 @@ export const useDiagramBuilder = () => {
         },
       };
 
-      setNodes((nds) => [...nds, newNode]);
+      setNodes((nds) => sortNodesByHierarchy([...nds, newNode]));
     },
-    [nodes, generateNodeId, handleNodeDelete]
+    [nodes, generateNodeId, handleNodeDelete, sortNodesByHierarchy]
   );
 
   /**
